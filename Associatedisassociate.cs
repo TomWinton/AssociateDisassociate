@@ -1,4 +1,4 @@
-﻿using System.Activities;
+using System.Activities;
 
 // These namespaces are found in the Microsoft.Xrm.Sdk.dll assembly
 // located in the SDK\bin folder of the SDK download.
@@ -80,10 +80,10 @@ namespace AssociateDisassociate
 
                 bool TrueFalse = this.Bool.Get(executionContext); //result of the yes no input determing whether to associate or disaasociate
 
+                
+                    EntityCollection collRecords = service.RetrieveMultiple(new FetchExpression(fetchxml));
                 if (TrueFalse) //Logic for disassociate
                 {
-                    EntityCollection collRecords = service.RetrieveMultiple(new FetchExpression(fetchxml));
-
                     if (collRecords != null && collRecords.Entities != null && collRecords.Entities.Count > 0)
                     {
                         EntityReferenceCollection collection = new EntityReferenceCollection();
@@ -98,8 +98,8 @@ namespace AssociateDisassociate
                 }
                 else //Logic for associate
                 {
-
-                    AssociateRequest request = new AssociateRequest
+                    if (collRecords.Entities.Count == 0) { 
+                        AssociateRequest request = new AssociateRequest
                     {
 
                         Target = new EntityReference("account", this.inputAccount.Get(executionContext).Id),
@@ -110,7 +110,7 @@ namespace AssociateDisassociate
                     };
 
                     service.Execute(request);
-
+                    }
                 }
 
             }
